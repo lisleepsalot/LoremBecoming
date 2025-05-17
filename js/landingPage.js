@@ -43,7 +43,7 @@ dataTests.forEach((dataTest) => {
   item.append(desc);
 
   item.addEventListener('click', () => {
-    window.location.href = `${dataTest.identifier}.html`;
+    window.open(`${dataTest.identifier}.html`, '_blank', 'noopener,noreferrer');
   });
 
   container.append(item);

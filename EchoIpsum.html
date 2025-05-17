@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Live Transcription</title>
+<style>
+    @font-face {
+        font-family: 'Heap Regular';
+        src: url('assets/Heap-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+    #transcript {
+        max-width: 100%;
+        padding: 200px 40px 40px 40px;
+        font-size: 1.2rem;
+        background: #fff;
+        white-space: pre-wrap;
+        line-height: 4rem;
+    }
+    .fade {
+        background-color: lightgray;
+        animation: fadeBg 5s forwards;
+        animation-delay: 10s;
+        display: inline-block;
+    }
+    @keyframes fadeBg {
+        from { background-color: lightgray; }
+        to   { background-color: transparent; }
+    }
+    .char {
+        border: 0.5px solid lightgray;
+        padding: 12px;
+        display: inline-block;
+    }
+</style>
+</head>
+<body>
+    <div id="transcript">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque elit dolor, blandit sit amet urna imperdiet, vulputate ullamcorper dolor. Etiam maximus lectus ac lobortis convallis. Integer vitae ipsum suscipit, pellentesque est ultricies, ultricies magna. Etiam ut elit eget turpis imperdiet eleifend. Fusce sit amet scelerisque odio, ac mollis ex. Duis ornare, orci in accumsan sodales, quam orci semper nulla, vel tincidunt tortor tellus sed sapien. Duis eget interdum eros. Nam euismod ipsum ut eros facilisis placerat. Donec varius mauris a ante blandit, vitae dictum est gravida. Cras velit magna, auctor ut quam ac, blandit varius dui. Nulla efficitur mauris elementum lorem sodales venenatis vitae in nulla.
+
+Ut laoreet accumsan magna, at porta turpis dictum et. Aliquam ac augue sit amet nulla ornare rutrum ut non erat. Etiam tempor nulla sit amet sem maximus, et venenatis lacus molestie. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit convallis nibh at porttitor. Vivamus eu quam vel lacus egestas scelerisque. Curabitur imperdiet auctor congue. Praesent ut aliquam nulla. Nam iaculis blandit erat. In maximus congue augue vitae commodo. Cras metus nunc, mattis vel mauris vel, efficitur interdum sem.
+</div>
+
+    <script>
+        // 1. feature-detect
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+        document.getElementById('transcript').textContent =
+            "😞 Your browser doesn't support SpeechRecognition.";
+        } else {
+        // 2. create & configure
+        const recog = new SpeechRecognition();
+        recog.continuous     = true;       // keep listening
+        recog.interimResults = true;       // show partials
+        recog.lang           = 'en-US';    // choose your locale
+
+        const outEl = document.getElementById('transcript');
+        const placeholderText = outEl.textContent;
+        const initialChars = placeholderText.split('');
+        // Clear and build individual span.char nodes:
+        outEl.innerHTML = '';
+        const nodes = initialChars.map(ch => {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = ch;
+          outEl.appendChild(span);
+          return span;
+        });
+        let replacedCount = 0;
+
+        let silenceTimer;
+
+        function resetTranscript() {
+          replacedCount = 0;
+          nodes.forEach((node, i) => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = initialChars[i];
+            outEl.replaceChild(span, node);
+            nodes[i] = span;
+          });
+        }
+
+        function resetSilenceTimer() {
+          if (silenceTimer) clearTimeout(silenceTimer);
+          silenceTimer = setTimeout(() => {
+            resetTranscript();
+          }, 10000);
+        }
+
+        // Start the silence timer immediately
+        resetSilenceTimer();
+
+        recog.onresult = evt => {
+          resetSilenceTimer();
+          for (let i = evt.resultIndex; i < evt.results.length; i++) {
+            if (evt.results[i].isFinal) {
+              const chunk = evt.results[i][0].transcript;
+              for (let j = 0; j < chunk.length; j++) {
+                const ch = chunk[j];
+                setTimeout(() => {
+                  if (replacedCount < nodes.length) {
+                    const pos = replacedCount;
+                    // Create and insert fade span:
+                    const span = document.createElement('span');
+                    span.className = 'fade char';
+                    span.textContent = ch;
+                    outEl.replaceChild(span, nodes[pos]);
+                    nodes[pos] = span;
+                    replacedCount++;
+                    // After fade, revert to span.char:
+                    setTimeout(() => {
+                      const charSpan = document.createElement('span');
+                      charSpan.className = 'char';
+                      charSpan.textContent = initialChars[pos];
+                      outEl.replaceChild(charSpan, span);
+                      nodes[pos] = charSpan;
+                    }, 15000);
+                  }
+                }, j * 150);
+              }
+            }
+          }
+        };
+
+        // 4. start listening immediately
+        recog.start();
+        recog.onerror = e => console.error(e);
+        }
+    </script>
+</body>
+</html>
