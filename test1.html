@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound-Triggered Divs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@100..900&family=Doto:wght@100..900&family=Emblema+One&family=Jost:wght@100..900&family=Lilita+One&family=Montserrat:wght@100..900&family=Playwrite+HU:wght@100..400&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            position: relative;
+        }
+        .placeholder {
+            position: absolute;
+            background-color: lightblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: left;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            white-space: normal; /* Allow text to wrap */
+            word-wrap: break-word; /* Break words naturally */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const loremText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus neque. Maecenas pharetra facilisis tempor. Curabitur luctus eget erat sed semper. Aliquam aliquet dui et hendrerit vestibulum. Donec ac arcu vel turpis dictum tincidunt in eu mauris. Vestibulum quis enim nibh. Etiam vitae mollis mauris. Aliquam orci ante, facilisis a nisl mattis, dictum volutpat nunc. Ut sapien libero, commodo eget lobortis ac, tristique ac nisl. Nulla sed turpis sit amet lectus vulputate tempor at id purus. Etiam ullamcorper sapien sit amet turpis rhoncus placerat. Praesent id ornare enim, at luctus velit.`;
+
+        function getRandomColor() {
+            return '#' + Math.floor(Math.random() * 16777215).toString(16);
+        }
+
+        function getRandomSize() {
+            return Math.floor(Math.random() * 700) + 100;
+        }
+
+        function getRandomFontSize() {
+            return Math.floor(Math.random() * 24) + 10;
+        }
+
+        function getRandomPosition(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function getRandomFont() {
+            const fonts = ["Arial", "Verdana", "Courier New", "Georgia", "Times New Roman", "Comic Sans MS", "Impact", "Tahoma",
+                "Big Shoulders Stencil", "Doto", "Emblema One", "Jost", "Lilita One", "Montserrat", "Playwrite HU", "Press Start 2P"];
+            return fonts[Math.floor(Math.random() * fonts.length)];
+        }
+
+        function createNewDiv() {
+            const newDiv = document.createElement('div');
+            const newSize = getRandomSize();
+            newDiv.classList.add('placeholder');
+            newDiv.style.backgroundColor = getRandomColor();
+            newDiv.style.width = newSize + 'px';
+            newDiv.style.height = newSize + 'px';
+            newDiv.style.fontSize = getRandomFontSize() + 'px';
+            newDiv.style.left = getRandomPosition(window.innerWidth - newSize) + 'px';
+            newDiv.style.top = getRandomPosition(window.innerHeight - newSize) + 'px';
+            newDiv.style.fontFamily = getRandomFont();
+
+            // Append text and adjust visibility
+            newDiv.innerText = loremText;
+            document.body.appendChild(newDiv);
+
+            // Ensure only visible text is shown
+            adjustTextToFit(newDiv);
+        }
+
+        function adjustTextToFit(div) {
+            let text = loremText;
+            div.innerText = text;
+
+            while (div.scrollHeight > div.clientHeight) {
+                text = text.slice(0, -1); // Remove the last character
+                div.innerText = text + "..."; // Add ellipsis to indicate truncation
+            }
+        }
+
+        // Microphone-based volume detection (3 times per second)
+        async function detectSound() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                analyser.fftSize = 32;
+                microphone.connect(analyser);
+
+                setInterval(() => {
+                    analyser.getByteFrequencyData(dataArray);
+                    const volume = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+
+                    console.log("Detected Volume:", volume); // Print to console
+
+                    if (volume > 0.8) {  // Trigger on any small sound
+                        createNewDiv();
+                    }
+                }, 80); // Runs every 333ms (≈ 3 times per second)
+            } catch (err) {
+                console.error("Microphone access denied:", err);
+            }
+        }
+
+        detectSound();
+    </script>
+</body>
+</html>

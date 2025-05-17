@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinking Background & Dynamic Text</title>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@100..900&family=Doto:wght@100..900&family=Emblema+One&family=Jost:wght@100..900&family=Lilita+One&family=Montserrat:wght@100..900&family=Playwrite+HU:wght@100..400&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 0.3s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .dynamic-content {
+            position: absolute;
+            border: 2px solid black;
+            transition: all 1.5s ease-in-out;
+            overflow: hidden;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-content">Loading...</div>
+    
+    <script>
+        const images = ["images/1.jpg", "images/2.jpg", "images/3.jpg", "images/4.jpg", "images/5.jpg", "images/6.jpg"];
+        let bgIndex = 0;
+
+        function changeBackground() {
+            document.body.style.backgroundImage = `url('${images[bgIndex]}')`;
+            bgIndex = (bgIndex + 1) % images.length;
+        }
+
+        setInterval(changeBackground, 500); // Change background every 0.5 seconds
+
+        const loremText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus neque. Maecenas pharetra facilisis tempor. Curabitur luctus eget erat sed semper. Aliquam aliquet dui et hendrerit vestibulum. Donec ac arcu vel turpis dictum tincidunt in eu mauris. Vestibulum quis enim nibh. Etiam vitae mollis mauris. Aliquam orci ante, facilisis a nisl mattis, dictum volutpat nunc. Ut sapien libero, commodo eget lobortis ac, tristique ac nisl. Nulla sed turpis sit amet lectus vulputate tempor at id purus. Etiam ullamcorper sapien sit amet turpis rhoncus placerat. Praesent id ornare enim, at luctus velit.`;
+
+        const fonts = ["Big Shoulders Stencil", "Doto", "Emblema One", "Jost", "Lilita One", "Montserrat", "Playwrite HU", "Press Start 2P"];
+        const alignments = ["left", "center", "right", "justify"];
+        const contentDiv = document.querySelector(".dynamic-content");
+        
+        function getRandomValue(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomColor() {
+            return `rgb(${getRandomValue(0, 255)}, ${getRandomValue(0, 255)}, ${getRandomValue(0, 255)})`;
+        }
+
+        function updateDynamicContent() {
+            const width = getRandomValue(200, 800) + "px";
+            const height = getRandomValue(100, 500) + "px";
+            const padding = getRandomValue(5, 50) + "px";
+            const fontSize = getRandomValue(12, 32) + "px";
+            const fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+            const textAlign = alignments[Math.floor(Math.random() * alignments.length)];
+            const displayType = Math.random() > 0.5 ? "block" : "inline-block";
+            const bgColor = getRandomColor();
+            
+            let content = loremText;
+            const imgCount = getRandomValue(0, 3);
+            for (let i = 0; i < imgCount; i++) {
+                const imgWidth = getRandomValue(30, 100) + "px";
+                const imgHeight = getRandomValue(30, 100) + "px";
+                const imgTag = `<img src="placeholder.webp" style="width:${imgWidth}; height:${imgHeight}; margin:5px;">`;
+                const insertPos = getRandomValue(0, content.length);
+                content = content.slice(0, insertPos) + imgTag + content.slice(insertPos);
+            }
+
+            contentDiv.style.width = width;
+            contentDiv.style.height = height;
+            contentDiv.style.padding = padding;
+            contentDiv.style.fontSize = fontSize;
+            contentDiv.style.fontFamily = fontFamily;
+            contentDiv.style.textAlign = textAlign;
+            contentDiv.style.display = displayType;
+            contentDiv.style.backgroundColor = bgColor;
+            contentDiv.innerHTML = content;
+        }
+
+        setInterval(updateDynamicContent, 1500); // Change every 1.5 seconds
+        updateDynamicContent(); // Initial call
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+body {
+  margin: 0;
+  padding: 32px 32px;
+  box-sizing: border-box;
+}
+
+.h1 {
+  font-size: 1em;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding-bottom: 80px;
+  border-bottom: solid black 1px;
+}
+
+h2{
+  margin: 0;
+  padding:0;
+}
+
+.test-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+.test-item {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(6, 1fr);
+  grid-column: 1 / -1;
+  padding: 16px 0px;
+  border-bottom: 2px dotted black;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.test-item:hover {
+  /* swap in your hover background */
+  background: url('assets/index_hover.png') no-repeat center center;
+  background-size: cover;
+}
+
+.test-item .block-1 img { /* cover image */
+  grid-column: 2;
+  height: 100px;
+  width: auto;
+  object-fit: cover;
+}
+
+.test-item .block-2 { /* index */
+  grid-column: 2;
+}
+
+.test-item .block-3 { /* title */
+  grid-column: 3;
+}
+
+.test-item .block-4 { /* description spans 3 columns */
+  grid-column: 4 / span 3;
+}
+.index_cover{
+  height: 150px;
+  padding: 8px 8px 8px 0px; 
+}
+
+.test-item {
+  /* ensure rows size automatically */
+  grid-auto-rows: auto;
+}
+
+.link-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 100px;
+  width: 100%;
+}

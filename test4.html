@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Placeholders & Possibilities</title>
+  <style>
+    body {
+      padding: 20px;
+      line-height: 1.5;
+      font-family: sans-serif;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #placeholder-text {
+      border: 1px solid #ccc;
+      padding: 20px;
+    }
+    .letter {
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+  <div id="placeholder-text">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a scelerisque nisl, nec ultrices mauris. Praesent lectus mi, blandit a nisl quis, interdum mattis eros. Pellentesque elementum vitae arcu a convallis. Praesent dignissim nisl sed purus iaculis vestibulum. Morbi ac ipsum vel massa ultricies ultrices. Proin nibh dolor, vehicula a nunc et, faucibus semper erat. Pellentesque ut ipsum in arcu convallis posuere id vel augue. Sed egestas facilisis odio eu mollis. Integer aliquam justo vitae diam tempus, sed tincidunt libero semper. Sed sed odio viverra, malesuada diam non, facilisis lorem.
+
+Vestibulum condimentum lorem nisi, in finibus sapien cursus ac. Etiam sapien libero, ultrices sagittis sapien vitae, mollis malesuada eros. Sed malesuada blandit est, euismod semper quam consequat id. Cras lobortis magna ac eros elementum dictum. Phasellus mollis libero vitae aliquam ultricies. Vivamus malesuada dui vitae velit hendrerit finibus. Donec et lorem iaculis, tincidunt nunc consequat, placerat quam. Mauris vel tincidunt turpis. Praesent nunc felis, consectetur ac mi et, pretium congue dui. Donec aliquam lorem eu risus consequat, eget mattis diam vestibulum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse luctus dui mollis turpis ullamcorper, ut imperdiet orci tempor.
+
+Phasellus vitae consequat diam. Aenean et efficitur velit, vel convallis velit. Fusce elit diam, sodales id dictum eget, convallis non odio. Nullam efficitur fringilla sem vitae rhoncus. Nam gravida metus tristique euismod eleifend. Vivamus fringilla, arcu pharetra consequat suscipit, sapien mi congue augue, eget egestas ligula velit non libero. In fringilla, risus et eleifend porta, erat risus consequat elit, id euismod risus neque nec mi.
+
+Duis condimentum fermentum varius. Sed semper turpis quis elit convallis, nec porttitor enim imperdiet. Vivamus elementum turpis metus, sit amet tempus nibh laoreet maximus. Nullam accumsan sapien libero, sit amet dapibus massa bibendum at. Donec non ipsum et orci aliquam pretium. Donec orci urna, cursus quis lacus a, ultrices ultricies augue. Duis purus lorem, hendrerit quis ligula sed, aliquet dapibus eros. Nulla condimentum ullamcorper lectus et congue. In interdum sem in tellus pellentesque, sit amet facilisis purus bibendum.
+  </div>
+  <script>
+    // Wrap every non-space character in #placeholder-text with a span and a data attribute.
+    function wrapLetters() {
+      const container = document.getElementById('placeholder-text');
+      const originalText = container.innerText;
+      let newHTML = '';
+      for (let char of originalText) {
+        if (char === ' ') {
+          newHTML += ' ';
+        } else if (char === '\n') {
+          newHTML += '<br>';
+        } else {
+          newHTML += `<span class="letter" data-replaced="false">${char}</span>`;
+        }
+      }
+      container.innerHTML = newHTML;
+    }
+
+    // Utility: Return a random integer between min and max (inclusive)
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Utility: Generate a random RGB color string
+    function getRandomColor() {
+      const r = getRandomInt(0, 255);
+      const g = getRandomInt(0, 255);
+      const b = getRandomInt(0, 255);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    // On keypress, replace the first unreplaced letter with the typed letter,
+    // bold it, and set a random background color.
+    function handleKeypress(e) {
+      const typedLetter = e.key;
+      const letterSpan = document.querySelector('.letter[data-replaced="false"]');
+      if (letterSpan) {
+        letterSpan.innerText = typedLetter;
+        letterSpan.setAttribute('data-replaced', 'true');
+        letterSpan.style.fontWeight = "bold";
+        letterSpan.style.backgroundColor = getRandomColor();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      wrapLetters();
+      document.addEventListener('keypress', handleKeypress);
+    });
+  </script>
+</body>
+</html>
