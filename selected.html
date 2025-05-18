@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive Selection</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 40px;
+      line-height: 1.8;
+    }
+    span.replaced {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+
+<p id="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.</p>
+
+<script>
+  let originalText = "";
+  let selectionRange = null;
+
+  document.addEventListener("mousedown", () => {
+    setTimeout(() => {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      selectionRange = sel.getRangeAt(0);
+      originalText = selectionRange.toString();
+      if (originalText.length === 0) return;
+
+      console.log("Selected character count:", originalText.length);
+
+      const span = document.createElement("span");
+      span.textContent = "8".repeat(originalText.length);
+      span.className = "replaced";
+
+      selectionRange.deleteContents();
+      selectionRange.insertNode(span);
+    }, 0);
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (selectionRange && originalText.length > 0) {
+      const span = document.querySelector("span.replaced");
+      if (span) {
+        const textNode = document.createTextNode(originalText);
+        span.replaceWith(textNode);
+      }
+      originalText = "";
+      selectionRange = null;
+    }
+  });
+</script>
+
+</body>
+</html>

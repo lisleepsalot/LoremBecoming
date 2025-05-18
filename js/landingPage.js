@@ -27,7 +27,7 @@ dataTests.forEach((dataTest) => {
   // block 2: index
   const idx = document.createElement('div');
   idx.classList.add('block-2');
-  idx.textContent = `test ${String(dataTest.index).padStart(2, '0')}`;
+  idx.textContent = `test` + `${String(dataTest.index).padStart(2, '0')}`;
   item.append(idx);
 
   // block 3: title
