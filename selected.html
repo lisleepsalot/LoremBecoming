@@ -260,12 +260,38 @@ Aπεριγρ αγωγήστείτε υψηλής πειαφάν ευργάνε�
       } else {
         selected = altTextMap[altTextMode];
       }
-      span.textContent = selected?.text.slice(0, originalText.length) || '';
+      // Animate text replacement one character at a time
+      span.textContent = '';
       span.className = "replaced";
       span.style.backgroundColor = selected?.color || 'black';
-
+      // Smooth white color transition
+      span.style.color = 'white';
+      span.style.transition = 'color 0.3s ease';
       selectionRange.deleteContents();
       selectionRange.insertNode(span);
+      // Animate typing with in-place character replacement
+      let current = originalText.split('');
+      for (let i = 0; i < originalText.length; i++) {
+        const replacementChar = selected.text[i % selected.text.length];
+        setTimeout(() => {
+          current[i] = replacementChar;
+          // Only wrap differing characters
+          span.innerHTML = '';
+          for (let j = 0; j < current.length; j++) {
+            const originalChar = originalText[j];
+            const currentChar = current[j];
+            if (originalChar !== currentChar) {
+              const charSpan = document.createElement('span');
+              charSpan.textContent = currentChar;
+              charSpan.style.backgroundColor = selected.color;
+              charSpan.style.color = 'white';
+              span.appendChild(charSpan);
+            } else {
+              span.appendChild(document.createTextNode(originalChar));
+            }
+          }
+        }, i * 10);
+      }
     }, 0);
   });
 
