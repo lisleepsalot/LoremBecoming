@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Looping Div Grid</title>
+  <style>
+    
+    /* A fixed counter display */
+    #counter {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #eee;
+      padding: 1px;
+      font-weight: bold;
+      z-index: 1000;
+    }
+    /* Ensure the body takes full height */
+    html, body {
+      margin: 0;
+    }
+    @media print {
+  html, body {
+    width: auto;
+    overflow: visible;
+  }
+
+
+  /* Optional: target specific elements */
+  .your-container {
+    width: 100%;
+    overflow: visible;
+  }
+}
+  </style>
+  <link rel="stylesheet" href="page_style.css">
+</head>
+<body>
+  <div class="floating-window">
+    <div class="heading">
+    <a href="index.html">Back</a>
+    <a href="index.html">Next</a>
+    </div>
+    <div class="content">
+        <span>Title Here</span>
+        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <div class="buttons">
+        <button onclick="location.reload()">reset</button>
+        <button id="generate-btn">Generate</button>
+        </div>
+    </div>
+</div>
+  <!-- The counter display -->
+  <div id="counter">Round Count: 0</div>
+  
+  <script>
+    let roundCount = 0;
+    let isTransitioning = false;
+    
+    // Updates the on-screen round counter display
+    function updateCounter() {
+      document.getElementById('counter').textContent = "Round Count: " + roundCount;
+    }
+    
+    // Creates a nested grid structure inside the given parent div
+    function createGrid(parent) {
+      const rows = Math.floor(Math.random() * 3) + 1;
+      const cols = Math.floor(Math.random() * 4) + 2;
+      const numNewDivs = Math.floor(Math.random() * 7) + 2;
+
+      return new Promise((resolve) => {
+        const newDivs = [];
+        let createdCount = 0;
+
+        for (let i = 0; i < numNewDivs; i++) {
+          setTimeout(() => {
+            const newDiv = document.createElement("div");
+            const hue = Math.floor(Math.random() * 360);
+            newDiv.style.background = `hsl(${hue}, 70%, 60%)`;
+            newDiv.style.transition = "background-color 0.3s ease-out, transform 0.3s ease-out";
+            newDiv.style.border = "1px solid black";
+            const shadowHue = Math.floor(Math.random() * 360);
+            newDiv.style.boxShadow = `0 0 4px hsl(${shadowHue}, 70%, 60%)`;
+            newDiv.style.padding = "2px";
+            newDiv.style.boxSizing = "border-box";
+
+            newDiv.style.display = "grid";
+            newDiv.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+            newDiv.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            newDiv.style.gap = "5px";
+
+            newDiv.style.transform = "scale(0.1)";
+            parent.appendChild(newDiv);
+            newDivs.push(newDiv);
+
+            requestAnimationFrame(() => {
+              newDiv.style.transform = "scale(1)";
+            });
+
+            setTimeout(() => {
+              newDiv.style.background = "white";
+            }, 300);
+
+            createdCount++;
+            if (createdCount === numNewDivs) {
+              resolve(newDivs);
+            }
+          }, i * 30);
+        }
+      });
+    }
+    
+    let parents = [document.body];
+    
+    // Repeatedly generates new nested grid levels with a time interval
+    async function iterateGrids() {
+      if (roundCount >= 6) return;
+      isTransitioning = true;
+
+      let nextParents = [];
+      for (const parent of parents) {
+        const newDivs = await createGrid(parent);
+        nextParents.push(...newDivs);
+      }
+
+      if (nextParents.length === 0) return;
+
+      parents = nextParents;
+      roundCount++;
+      updateCounter();
+
+      isTransitioning = false;
+    }
+    
+  </script>
+  <script>
+    document.getElementById("generate-btn").addEventListener("click", () => {
+      if (!isTransitioning && roundCount < 6) {
+        iterateGrids();
+      }
+    });
+  </script>
+</body>
+</html>
