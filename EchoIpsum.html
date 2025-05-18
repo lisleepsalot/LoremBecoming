@@ -2,43 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Live Transcription</title>
+<title>Echo Ipsum</title>
+<link rel="stylesheet" href="page_style.css">
+<link rel="stylesheet" href="test1_styles.css">
 <style>
-    @font-face {
-        font-family: 'Heap Regular';
-        src: url('assets/Heap-Regular.woff2') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-    }
-    #transcript {
-        max-width: 100%;
-        padding: 200px 40px 40px 40px;
-        font-size: 1.2rem;
-        background: #fff;
-        white-space: pre-wrap;
-        line-height: 4rem;
-    }
-    .fade {
-        background-color: lightgray;
-        animation: fadeBg 5s forwards;
-        animation-delay: 10s;
-        display: inline-block;
-    }
-    @keyframes fadeBg {
-        from { background-color: lightgray; }
-        to   { background-color: transparent; }
-    }
-    .char {
-        border: 0.5px solid lightgray;
-        padding: 12px;
-        display: inline-block;
-    }
+@font-face {
+    font-family: 'Heap Regular';
+    src: url('assets/Heap-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+#transcript {
+    padding-top: 175px;
+    max-width: 100%;
+    margin: 0px 40px ;
+    font-size: 1.2rem;
+    white-space: pre-wrap;
+    line-height: 2.4rem;
+}
+.char {
+  /* border: 0.5px solid black; */
+  padding: 8px;
+  display: inline-block;
+  background-color: white;
+  transform: translateY(0);
+  transition: background-color 2s ease, transform 1s ease, color 1s ease;
+  box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+  border-radius: 4px;
+}
+
+.char.active {
+  background-color: blue;
+  color: white;
+  transform: translateY(-10px);
+}
 </style>
 </head>
 <body>
-    <div id="transcript">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque elit dolor, blandit sit amet urna imperdiet, vulputate ullamcorper dolor. Etiam maximus lectus ac lobortis convallis. Integer vitae ipsum suscipit, pellentesque est ultricies, ultricies magna. Etiam ut elit eget turpis imperdiet eleifend. Fusce sit amet scelerisque odio, ac mollis ex. Duis ornare, orci in accumsan sodales, quam orci semper nulla, vel tincidunt tortor tellus sed sapien. Duis eget interdum eros. Nam euismod ipsum ut eros facilisis placerat. Donec varius mauris a ante blandit, vitae dictum est gravida. Cras velit magna, auctor ut quam ac, blandit varius dui. Nulla efficitur mauris elementum lorem sodales venenatis vitae in nulla.
 
-Ut laoreet accumsan magna, at porta turpis dictum et. Aliquam ac augue sit amet nulla ornare rutrum ut non erat. Etiam tempor nulla sit amet sem maximus, et venenatis lacus molestie. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit convallis nibh at porttitor. Vivamus eu quam vel lacus egestas scelerisque. Curabitur imperdiet auctor congue. Praesent ut aliquam nulla. Nam iaculis blandit erat. In maximus congue augue vitae commodo. Cras metus nunc, mattis vel mauris vel, efficitur interdum sem.
+<div class="floating-window">
+    <div class="heading">
+    <a href="index.html">Back</a>
+    <a href="index.html">Next</a>
+    </div>
+    <div class="content">
+        <span>Title Here</span>
+        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <div class="buttons">
+        <button onclick="location.reload()">reset</button>
+        </div>
+    </div>
+</div>
+
+    <div id="transcript">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque elit dolor, blandit sit amet urna imperdiet, vulputate ullamcorper dolor. Etiam maximus lectus ac lobortis convallis. Integer vitae ipsum suscipit, pellentesque est ultricies, ultricies magna. Etiam ut elit eget turpis imperdiet eleifend. Fusce sit amet scelerisque odio, ac mollis ex. Duis ornare, orci in accumsan sodales, quam orci semper nulla, vel tincidunt tortor tellus sed sapien. Duis eget interdum eros. Nam euismod ipsum ut eros facilisis placerat. Donec varius mauris a ante blandit, vitae dictum est gravida. Cras velit mana, auctor ut quam ac, blandit varius dui. Nulla efficitur mauris elementum lorem sodales venenatis vitae in nulla.
 </div>
 
     <script>
@@ -81,10 +97,27 @@ Ut laoreet accumsan magna, at porta turpis dictum et. Aliquam ac augue sit amet 
           });
         }
 
+        function resetTranscriptAfterTransitions() {
+          const maxWait = 16000; // 15s fade + 1s buffer
+
+          const interval = setInterval(() => {
+            const stillActive = nodes.some(node => node.classList.contains('active'));
+            if (!stillActive) {
+              clearInterval(interval);
+              resetTranscript();
+            }
+          }, 500);
+
+          setTimeout(() => {
+            clearInterval(interval);
+            resetTranscript();
+          }, maxWait);
+        }
+
         function resetSilenceTimer() {
           if (silenceTimer) clearTimeout(silenceTimer);
           silenceTimer = setTimeout(() => {
-            resetTranscript();
+            resetTranscriptAfterTransitions();
           }, 10000);
         }
 
@@ -101,20 +134,13 @@ Ut laoreet accumsan magna, at porta turpis dictum et. Aliquam ac augue sit amet 
                 setTimeout(() => {
                   if (replacedCount < nodes.length) {
                     const pos = replacedCount;
-                    // Create and insert fade span:
-                    const span = document.createElement('span');
-                    span.className = 'fade char';
+                    const span = nodes[pos];
+                    span.classList.add('active');
                     span.textContent = ch;
-                    outEl.replaceChild(span, nodes[pos]);
-                    nodes[pos] = span;
                     replacedCount++;
-                    // After fade, revert to span.char:
                     setTimeout(() => {
-                      const charSpan = document.createElement('span');
-                      charSpan.className = 'char';
-                      charSpan.textContent = initialChars[pos];
-                      outEl.replaceChild(charSpan, span);
-                      nodes[pos] = charSpan;
+                      span.classList.remove('active');
+                      span.textContent = initialChars[pos];
                     }, 15000);
                   }
                 }, j * 150);
@@ -127,6 +153,12 @@ Ut laoreet accumsan magna, at porta turpis dictum et. Aliquam ac augue sit amet 
         recog.start();
         recog.onerror = e => console.error(e);
         }
+
+    </script>
+    <script src="js/data_tests.js"></script>
+    <script src="js/floating_info.js"></script>
+    <script>
+        showInfo('echoIpsum');
     </script>
 </body>
 </html>

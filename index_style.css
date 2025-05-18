@@ -28,7 +28,7 @@ h2{
   width: 100%;
   grid-template-columns: repeat(6, 1fr);
   grid-column: 1 / -1;
-  padding: 16px 0px;
+  padding: 8px 0px;
   border-bottom: 2px dotted black;
   box-sizing: border-box;
   cursor: pointer;
@@ -42,7 +42,7 @@ h2{
 
 .test-item .block-1 img { /* cover image */
   grid-column: 2;
-  height: 100px;
+  height: 80px;
   width: auto;
   object-fit: cover;
 }

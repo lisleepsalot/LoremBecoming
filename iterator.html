@@ -3,23 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound-Triggered Divs</title>
+    <title>Iterator</title>
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@100..900&family=Doto:wght@100..900&family=Emblema+One&family=Jost:wght@100..900&family=Lilita+One&family=Montserrat:wght@100..900&family=Playwrite+HU:wght@100..400&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="page_style.css">
     <style>
         body {
+            height: 100vh;
+            background-image: url('assets/index_hover.png');
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        #iterator-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            overflow: hidden;
-            position: relative;
         }
         .placeholder {
             position: absolute;
-            background-color: lightblue;
+            background-color: white;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
+            border: none;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -30,23 +39,54 @@
             word-wrap: break-word; /* Break words naturally */
             padding: 10px;
             box-sizing: border-box;
+            animation: popScale 0.1s ease-out;
+            transform-origin: center;
+        }
+        @keyframes popScale {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        #debugger {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: black;
+            color: white;
+            padding: 5px 10px;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 9999;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
+    <div class="floating-window">
+        <div class="heading">
+        <a href="index.html">Back</a>
+        <a href="index.html">Next</a>
+        </div>
+        <div class="content">
+            <span>Title Here</span>
+            <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+            <div class="buttons">
+            <button onclick="location.reload()">reset</button>
+            </div>
+        </div>
+    </div>
+    <div id="iterator-container"></div>
+    <div id="debugger">Volume: 0</div>
     <script>
         const loremText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus neque. Maecenas pharetra facilisis tempor. Curabitur luctus eget erat sed semper. Aliquam aliquet dui et hendrerit vestibulum. Donec ac arcu vel turpis dictum tincidunt in eu mauris. Vestibulum quis enim nibh. Etiam vitae mollis mauris. Aliquam orci ante, facilisis a nisl mattis, dictum volutpat nunc. Ut sapien libero, commodo eget lobortis ac, tristique ac nisl. Nulla sed turpis sit amet lectus vulputate tempor at id purus. Etiam ullamcorper sapien sit amet turpis rhoncus placerat. Praesent id ornare enim, at luctus velit.`;
 
         function getRandomColor() {
             return '#' + Math.floor(Math.random() * 16777215).toString(16);
-        }
-
-        function getRandomSize() {
-            return Math.floor(Math.random() * 700) + 100;
-        }
-
-        function getRandomFontSize() {
-            return Math.floor(Math.random() * 24) + 10;
         }
 
         function getRandomPosition(max) {
@@ -59,21 +99,21 @@
             return fonts[Math.floor(Math.random() * fonts.length)];
         }
 
-        function createNewDiv() {
+        function createNewDiv(size, fontSize) {
             const newDiv = document.createElement('div');
-            const newSize = getRandomSize();
             newDiv.classList.add('placeholder');
-            newDiv.style.backgroundColor = getRandomColor();
-            newDiv.style.width = newSize + 'px';
-            newDiv.style.height = newSize + 'px';
-            newDiv.style.fontSize = getRandomFontSize() + 'px';
-            newDiv.style.left = getRandomPosition(window.innerWidth - newSize) + 'px';
-            newDiv.style.top = getRandomPosition(window.innerHeight - newSize) + 'px';
+            newDiv.style.width = size + 'px';
+            newDiv.style.height = size + 'px';
+            newDiv.style.fontSize = fontSize + 'px';
+            newDiv.style.left = getRandomPosition(window.innerWidth - size) + 'px';
+            newDiv.style.top = getRandomPosition(window.innerHeight - size) + 'px';
+            const padding = Math.min(size / 4, 40 + Math.random() * 40);
+            newDiv.style.padding = `${padding}px`;
             newDiv.style.fontFamily = getRandomFont();
 
             // Append text and adjust visibility
             newDiv.innerText = loremText;
-            document.body.appendChild(newDiv);
+            document.getElementById('iterator-container').appendChild(newDiv);
 
             // Ensure only visible text is shown
             adjustTextToFit(newDiv);
@@ -105,12 +145,25 @@
                     analyser.getByteFrequencyData(dataArray);
                     const volume = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
 
-                    console.log("Detected Volume:", volume); // Print to console
+                    document.getElementById('debugger').innerText = `Volume: ${volume.toFixed(2)}`;
 
-                    if (volume > 0.8) {  // Trigger on any small sound
-                        createNewDiv();
-                    }
-                }, 80); // Runs every 333ms (≈ 3 times per second)
+                    if (volume < 0.6) return;
+
+                    const baseSize = 100;
+                    const maxSize = 800;
+                    const baseFontSize = 10;
+                    const maxFontSize = 48;
+
+                    const minVol = 0.6;
+                    const maxVol = 1.2;
+                    const scale = Math.min((volume - minVol) / (maxVol - minVol), 1);
+
+                    const size = baseSize + scale * (maxSize - baseSize);
+                    const fontSize = baseFontSize + scale * (maxFontSize - baseFontSize);
+
+                    createNewDiv(size, fontSize);
+
+                }, 300); // Runs every 333ms (≈ 3 times per second)
             } catch (err) {
                 console.error("Microphone access denied:", err);
             }
