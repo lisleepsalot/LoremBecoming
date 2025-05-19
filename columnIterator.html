@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinking Background & Dynamic Text</title>
+    <link rel="stylesheet" href="page_style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            background-image: none;
+        }
+        .dynamic-content {
+            margin-top: 320px;
+            width: 100vw;
+            height: 100vh;
+            transition: all 3s ease-in-out;
+            overflow: hidden;
+            padding: 10px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        .column-wrapper {
+            display: grid;
+            width: 100%;
+            height: 100%;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="floating-window">
+        <div class="heading">
+        <a href="index.html">Back</a>
+        <a href="index.html">Next</a>
+        </div>
+        <div class="content">
+            <span>Title Here</span>
+            <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+            <div class="buttons">
+                <button onclick="location.reload()">reset</button>
+                <button onclick="manualUpdate()">update once</button>
+            </div>
+        </div>
+    </div>
+    <div class="dynamic-content">Loading...</div>
+    
+    <script>
+
+        const loremText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nisi est, feugiat ut purus in, efficitur pretium mauris. Sed ornare tincidunt ante non hendrerit. Aliquam erat volutpat. Nam blandit in dui id aliquet. Quisque et libero id odio porta cursus finibus sed elit. Praesent id posuere nulla. Pellentesque vulputate enim ac enim vehicula viverra. Nulla lobortis gravida tellus nec imperdiet. Cras at aliquet elit. Praesent molestie tortor ex, ut laoreet elit placerat id. In venenatis erat hendrerit lacinia consequat. Pellentesque ut dui hendrerit ligula dictum euismod.
+
+Praesent a mi nisi. Nunc dapibus facilisis suscipit. Nulla facilisi. Duis id ornare nulla. Etiam pulvinar ornare sollicitudin. Cras eu ante vestibulum turpis pharetra sollicitudin. Nulla ut aliquet magna. Vestibulum rhoncus finibus nisi, quis varius lorem blandit eget. Integer aliquet nunc purus, mollis rhoncus felis eleifend vitae. Fusce eu sem ex. Etiam ac erat maximus, semper urna quis, pulvinar lorem. Integer faucibus iaculis purus id tempus. Donec volutpat id felis dictum commodo. Vestibulum viverra, mi sed maximus pulvinar, lorem nibh bibendum nisl, in congue lorem ex vel mi.
+
+Curabitur quis faucibus mi, eget auctor purus. Morbi non volutpat massa, vitae rutrum lectus. Donec massa neque, ornare at diam in, aliquet ultricies dui. Mauris ante augue, semper at molestie mattis, aliquam ac nunc. Sed aliquet enim interdum lorem fermentum convallis vel sed leo. Duis vitae massa sagittis, tristique tortor in, auctor arcu. Aliquam ac interdum ex. Nam ut libero sem. Suspendisse potenti. Nunc libero eros, rhoncus vel ligula vitae, pharetra accumsan lacus. Suspendisse lorem diam, egestas quis erat blandit, semper maximus ligula.
+
+Maecenas euismod elit quis urna commodo iaculis. Donec maximus elit eget convallis faucibus. Aliquam nunc sapien, dignissim at consequat ut, mattis pretium elit. Nullam blandit nisl at nisi tincidunt bibendum. Maecenas cursus urna consectetur hendrerit accumsan. Nullam neque tellus, egestas ac sapien at, rhoncus fermentum lectus. Aliquam et maximus dolor. Fusce pharetra lorem non tincidunt dictum. Cras non nulla justo. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc dignissim dui id magna hendrerit, et iaculis turpis imperdiet. Nulla facilisi. Donec at cursus magna, et iaculis est.
+
+Pellentesque ac laoreet erat, facilisis pretium erat. Ut feugiat, ipsum ac venenatis aliquam, tortor nulla condimentum sem, quis porttitor diam ligula ac tellus. Vivamus tristique vestibulum purus quis elementum. Vivamus tincidunt ipsum a ultricies ultrices. Morbi varius dui vitae facilisis dapibus. Proin euismod eu tortor ac semper. Aliquam erat volutpat. Vivamus vel sollicitudin ante. Donec vestibulum dui turpis. Suspendisse sit amet nibh quis tellus tincidunt fermentum ac porttitor massa. Morbi hendrerit elit a turpis dictum, quis pretium ligula dapibus. Integer at luctus lorem, a tempus nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam accumsan magna vel tellus molestie, vel venenatis quam sodales. Proin quam risus, pharetra sit amet tincidunt ut, pharetra in ligula. Donec ultricies finibus interdum.
+
+`;
+
+        const alignments = ["left", "center", "right", "justify"];
+        const contentDiv = document.querySelector(".dynamic-content");
+        
+        function getRandomValue(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+
+        function updateDynamicContent() {
+            const fontSize = getRandomValue(10, 18) + "px";
+            const textAlign = alignments[Math.floor(Math.random() * alignments.length)];
+            const displayType = Math.random() > 0.5 ? "block" : "inline-block";
+            
+            let content = loremText;
+            const imgCount = getRandomValue(2, 8);
+            for (let i = 0; i < imgCount; i++) {
+                const imgWidth = getRandomValue(100, 400) + "px";
+                const imgHeight = getRandomValue(100, 200) + "px";
+                const imgTag = `
+                    <div style="display:inline-block; width:${imgWidth}; height:${imgHeight}; border:1px solid black; background:white; position:relative; margin:5px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%;">
+                            <svg width="100%" height="100%" style="position:absolute; top:0; left:0;">
+                                <line x1="0" y1="0" x2="100%" y2="100%" stroke="black" stroke-width="1"/>
+                                <line x1="100%" y1="0" x2="0" y2="100%" stroke="black" stroke-width="1"/>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+                const insertPos = getRandomValue(0, content.length);
+                content = content.slice(0, insertPos) + imgTag + content.slice(insertPos);
+            }
+
+            contentDiv.style.fontSize = fontSize;
+            contentDiv.style.textAlign = textAlign;
+            contentDiv.style.display = displayType;
+
+            const columnCount = getRandomValue(2, 12);
+            const columnWrapper = `<div class="column-wrapper" style="grid-template-columns: repeat(${columnCount}, 1fr); gap: 10px;">${content}</div>`;
+            contentDiv.innerHTML = columnWrapper;
+        }
+
+        let autoInterval = setInterval(updateDynamicContent, 5000);
+        updateDynamicContent();
+
+        function manualUpdate() {
+            updateDynamicContent();
+            clearInterval(autoInterval);
+            setTimeout(() => {
+                autoInterval = setInterval(updateDynamicContent, 5000);
+            }, 8000);
+        }
+    </script>
+</body>
+</html>

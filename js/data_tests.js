@@ -17,7 +17,7 @@ const dataTests = [
   },
   {
     index: 3, 
-    image: 'assets/test_cover2.jpg',
+    image: 'assets/test_cover3.png',
     title: 'Selected Text',
     identifier: 'selected',
     description: `Your second item’s description here…`,
@@ -25,16 +25,24 @@ const dataTests = [
   },
   {
     index: 4,
-    image: 'assets/test_cover1.webp',
-    title: 'Grid Maker1',
-    identifier: 'gridMaker1',
+    image: 'assets/test_cover4.webp',
+    title: 'Column Iterator',
+    identifier: 'columnIterator',
     description: `Your second item’s description here…`,
     instruction: ``
   },
   {
+    index: 5,
+    image: 'assets/test_cover5.gif',
+    title: 'Grid Maker 1',
+    identifier: 'gridMaker1',
+    description: `Translate dummy text into different languages?`,
+    instruction: ``
+  },
+  {
     index: 6, 
-    image: 'assets/test_cover1.webp',
-    title: 'Grid Maker2',
+    image: 'assets/test_cover6.png',
+    title: 'Grid Maker 2',
     identifier: 'gridMaker2',
     description: `Your second item’s description here…`,
     instruction: ``
@@ -42,21 +50,13 @@ const dataTests = [
   {
     index: 7,
     image: 'assets/test_cover1.webp',
-    title: 'Languages same time',
-    identifier: 'gridMaker1',
-    description: `Translate dummy text into different languages?`,
-    instruction: ``
-  },
-  {
-    index: 8,
-    image: 'assets/test_cover1.webp',
     title: 'Type Ipsum',
     identifier: 'gridMaker1',
     description: `Your second item’s description here…`,
     instruction: ``
   },
   {
-    index: 9,
+    index: 8,
     image: 'assets/test_cover1.webp',
     title: `Designer's Hand`,
     identifier: 'gridMaker1',

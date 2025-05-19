@@ -42,7 +42,7 @@ h2{
 
 .test-item .block-1 img { /* cover image */
   grid-column: 2;
-  height: 80px;
+  height: 120px;
   width: auto;
   object-fit: cover;
 }
@@ -72,6 +72,6 @@ h2{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 100px;
+  padding-top: 130px;
   width: 100%;
 }
