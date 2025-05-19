@@ -16,6 +16,7 @@
 
     #gridMaker2 {
       margin-top: 120px;
+      padding: 32px;
       width: 100vw;
       height: 100vh;
       box-sizing: border-box;
@@ -52,6 +53,9 @@
         <div class="labels">
           <button id="label-vertical" class="active">Vertical</button>
           <button id="label-horizontal">Horizontal</button>
+        </div>
+        <div class="controls">
+          <button id="reset-button">Reset</button>
         </div>
     </div>
 </div>
@@ -109,39 +113,90 @@ Mauris quis purus augue. Quisque at tortor et ante bibendum semper eget non just
 
   const gridDiv = document.getElementById("gridMaker2");
 
-  gridDiv.addEventListener("click", (e) => {
+  let splitPoints = [];
+
+gridDiv.addEventListener("click", (e) => {
     if (currentMode !== "vertical") return;
 
-    const fullText = gridDiv.innerText;
+    // Reconstruct the full text from current columns
+    const columns = Array.from(gridDiv.children);
+    const fullText = columns.length > 0
+      ? columns.map(col => col.innerText).join("")
+      : gridDiv.innerText;
     const rect = gridDiv.getBoundingClientRect();
-    const clickX = e.clientX - rect.left + gridDiv.scrollLeft;
 
-    const splitRatio = clickX / gridDiv.clientWidth;
-    const splitIndex = Math.floor(fullText.length * splitRatio);
+    const range = document.caretRangeFromPoint(e.clientX, e.clientY);
+    if (!range) return;
 
-    const part1 = fullText.slice(0, splitIndex);
-    const part2 = fullText.slice(splitIndex);
+    // Calculate offset relative to fullText
+    let offset = 0;
+    let node = range.startContainer;
+    while (node && node !== gridDiv) {
+      if (node.previousSibling) {
+        node = node.previousSibling;
+        offset += node.textContent.length;
+      } else {
+        node = node.parentNode;
+      }
+    }
+    offset += range.startOffset;
+
+    const ratio = offset / fullText.length;
+    const GAP_THRESHOLD = 0.02;
+
+    if (splitPoints.some(r => Math.abs(r - ratio) < GAP_THRESHOLD)) return;
+
+    splitPoints.push(ratio);
+    splitPoints.sort((a, b) => a - b);
+
+    const splitIndices = splitPoints.map(r => Math.floor(fullText.length * r));
+    const contentChunks = [];
+    let lastIndex = 0;
+
+    for (const index of splitIndices) {
+      contentChunks.push(fullText.slice(lastIndex, index));
+      lastIndex = index;
+    }
+    contentChunks.push(fullText.slice(lastIndex));
 
     gridDiv.innerHTML = "";
-    gridDiv.style.display = "flex";
-    gridDiv.style.flexDirection = "row";
-    gridDiv.style.gap = "20px";
+    gridDiv.style.display = "grid";
     gridDiv.style.overflow = "auto";
+    gridDiv.style.gridTemplateColumns =
+      splitPoints
+        .reduce((cols, r, i, arr) => {
+          const pct = Math.round((i === 0 ? r : r - arr[i - 1]) * 100);
+          return cols + `${pct}% 20px `;
+        }, "") +
+      `${Math.round((1 - splitPoints[splitPoints.length - 1]) * 100)}%`;
 
-    const div1 = document.createElement("div");
-    const div2 = document.createElement("div");
+    const contentChunksWithGaps = [];
+    let lastIndex2 = 0;
+    for (const index of splitIndices) {
+      contentChunksWithGaps.push(fullText.slice(lastIndex2, index));
+      lastIndex2 = index;
+    }
+    contentChunksWithGaps.push(fullText.slice(lastIndex2));
 
-    div1.innerText = part1;
-    div2.innerText = part2;
-
-    div1.style.flex = splitRatio;
-    div2.style.flex = 1 - splitRatio;
-
-    div1.style.whiteSpace = div2.style.whiteSpace = "pre-wrap";
-    div1.style.overflow = div2.style.overflow = "auto";
-
-    gridDiv.appendChild(div1);
-    gridDiv.appendChild(div2);
+    contentChunksWithGaps.forEach((chunk, i) => {
+      const div = document.createElement("div");
+      div.innerText = chunk;
+      div.style.whiteSpace = "pre-wrap";
+      div.style.overflow = "auto";
+      gridDiv.appendChild(div);
+      if (i < contentChunksWithGaps.length - 1) {
+        const gap = document.createElement("div");
+        gap.style.width = "20px";
+        gridDiv.appendChild(gap);
+      }
+    });
+  });
+  document.getElementById("reset-button").addEventListener("click", () => {
+    splitPoints = [];
+    const originalText = gridDiv.innerText.replace(/\s+$/, "");
+    gridDiv.innerHTML = originalText;
+    gridDiv.style.display = "";
+    gridDiv.style.gridTemplateColumns = "";
   });
   </script>
 </body>
