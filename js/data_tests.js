@@ -49,44 +49,36 @@ const dataTests = [
   },
   {
     index: 7,
-    image: 'assets/test_cover1.webp',
+    image: 'assets/test_cover7.webp',
     title: 'Type Ipsum',
-    identifier: 'gridMaker1',
+    identifier: 'typeIpsum',
     description: `Your second item’s description here…`,
     instruction: ``
   },
   {
     index: 8,
-    image: 'assets/test_cover1.webp',
-    title: `Designer's Hand`,
-    identifier: 'gridMaker1',
-    description: `Your second item’s description here…`,
-    instruction: ``
-  },
-  {
-    index: 10,
-    image: 'assets/test_cover1.webp',
-    title: 'Smart Text1',
-    identifier: 'gridMaker1',
+    image: 'assets/test_cover8.jpeg',
+    title: 'Nouveau Rebus',
+    identifier: 'nouveauRebus',
     description: `Putting Lorem Ipsum in situations`,
     instruction: ``
   },
   {
-    index: 11,
-    image: 'assets/test_cover1.webp',
-    title: 'Smart Text2',
-    identifier: 'gridMaker1',
+    index: 9,
+    image: 'assets/test_cover9.png',
+    title: 'Alternatives',
+    identifier: 'selectionTag',
     description: `Making Lorem Ipsum into reasonable text anytime`,
     instruction: ``
   },
   {
-    index: 12,
-    image: 'assets/test_cover1.webp',
-    title: 'Type Ipsum',
-    identifier: 'gridMaker1',
+    index: 10,
+    image: 'assets/test_cover10.webp',
+    title: `Designer's Hand`,
+    identifier: 'hand',
     description: `Your second item’s description here…`,
     instruction: ``
-  }
+  },
 ];
 
 const originalWords = [];

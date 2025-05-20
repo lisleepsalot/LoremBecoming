@@ -27,12 +27,6 @@
       overflow: auto;
     }
 
-    .labels button {
-      margin-right: 10px;
-      padding: 5px 10px;
-      font-family: monospace;
-      cursor: pointer;
-    }
 
     .labels .active {
       font-weight: bold;
@@ -51,8 +45,10 @@
         <span>Title Here</span>
         <div class="description">Description text goes here. It can span across two rows worth of height.</div>
         <div class="labels">
-          <button id="label-vertical" class="active">Vertical</button>
-          <button id="label-horizontal">Horizontal</button>
+          <input type="radio" id="vertical" name="direction" value="vertical" checked>
+          <label for="vertical">Vertical</label>
+          <input type="radio" id="horizontal" name="direction" value="horizontal">
+          <label for="horizontal">Horizontal</label>
         </div>
         <div class="controls">
           <button id="reset-button">Reset</button>
@@ -97,106 +93,189 @@ Mauris quis purus augue. Quisque at tortor et ante bibendum semper eget non just
   </div>
 
   <script>
+  // Utility function to measure how much text fits in a given dimension and size
+  function measureTextFit(text, dimension, maxSize) {
+    const testDiv = document.createElement("div");
+    testDiv.style.position = "absolute";
+    testDiv.style.visibility = "hidden";
+    testDiv.style[dimension] = maxSize;
+    testDiv.style.width = dimension === "height" ? "100%" : maxSize;
+    testDiv.style.height = dimension === "width" ? "100%" : maxSize;
+    testDiv.style.fontFamily = "monospace";
+    testDiv.style.fontSize = "0.7rem";
+    testDiv.style.lineHeight = "1.4";
+    testDiv.style.whiteSpace = "pre-wrap";
+    testDiv.style.overflow = "auto";
+    document.body.appendChild(testDiv);
+
+    let low = 0;
+    let high = text.length;
+    let best = 0;
+
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      testDiv.innerText = text.slice(0, mid);
+      if (dimension === "height" && testDiv.scrollHeight <= testDiv.clientHeight ||
+          dimension === "width" && testDiv.scrollWidth <= testDiv.clientWidth) {
+        best = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    document.body.removeChild(testDiv);
+    return best;
+  }
+
   let currentMode = "vertical";
 
-  document.getElementById("label-vertical").addEventListener("click", () => {
+  document.getElementById("vertical").addEventListener("change", () => {
     currentMode = "vertical";
-    document.getElementById("label-vertical").classList.add("active");
-    document.getElementById("label-horizontal").classList.remove("active");
   });
 
-  document.getElementById("label-horizontal").addEventListener("click", () => {
+  document.getElementById("horizontal").addEventListener("change", () => {
     currentMode = "horizontal";
-    document.getElementById("label-horizontal").classList.add("active");
-    document.getElementById("label-vertical").classList.remove("active");
   });
 
   const gridDiv = document.getElementById("gridMaker2");
 
   let splitPoints = [];
 
+let rowSplitPoints = [];
+
 gridDiv.addEventListener("click", (e) => {
-    if (currentMode !== "vertical") return;
+  if (currentMode !== "vertical" && currentMode !== "horizontal") return;
 
-    // Reconstruct the full text from current columns
-    const columns = Array.from(gridDiv.children);
-    const fullText = columns.length > 0
-      ? columns.map(col => col.innerText).join("")
-      : gridDiv.innerText;
-    const rect = gridDiv.getBoundingClientRect();
+  const columns = Array.from(gridDiv.children);
+  const fullText = columns.length > 0
+    ? columns.map(col => col.innerText).join("")
+    : gridDiv.innerText;
+  const rect = gridDiv.getBoundingClientRect();
+  // pixel-based calculation for vertical split
+  let ratio, ratioY;
+  if (currentMode === "vertical") {
+    const clickX = e.clientX - rect.left + gridDiv.scrollLeft;
+    ratio = clickX / gridDiv.clientWidth;
+  } else {
+    ratioY = (e.clientY - rect.top + gridDiv.scrollTop) / gridDiv.scrollHeight;
+  }
+  const GAP_THRESHOLD = 0.02;
 
-    const range = document.caretRangeFromPoint(e.clientX, e.clientY);
-    if (!range) return;
+  const targetPoints = currentMode === "vertical" ? splitPoints : (window.rowSplitPoints ||= rowSplitPoints);
+  if (targetPoints.some(r => Math.abs(r - (currentMode === "vertical" ? ratio : ratioY)) < GAP_THRESHOLD)) return;
 
-    // Calculate offset relative to fullText
-    let offset = 0;
-    let node = range.startContainer;
-    while (node && node !== gridDiv) {
-      if (node.previousSibling) {
-        node = node.previousSibling;
-        offset += node.textContent.length;
-      } else {
-        node = node.parentNode;
-      }
-    }
-    offset += range.startOffset;
+  targetPoints.push(currentMode === "vertical" ? ratio : ratioY);
+  targetPoints.sort((a, b) => a - b);
 
-    const ratio = offset / fullText.length;
-    const GAP_THRESHOLD = 0.02;
-
-    if (splitPoints.some(r => Math.abs(r - ratio) < GAP_THRESHOLD)) return;
-
-    splitPoints.push(ratio);
-    splitPoints.sort((a, b) => a - b);
-
-    const splitIndices = splitPoints.map(r => Math.floor(fullText.length * r));
+  if (currentMode === "vertical") {
+    const percentages = [...targetPoints, 1];
     const contentChunks = [];
-    let lastIndex = 0;
-
-    for (const index of splitIndices) {
-      contentChunks.push(fullText.slice(lastIndex, index));
-      lastIndex = index;
+    let lastRatio = 0;
+    for (const ratio of percentages) {
+      const start = Math.floor(fullText.length * lastRatio);
+      const end = Math.floor(fullText.length * ratio);
+      contentChunks.push(fullText.slice(start, end));
+      lastRatio = ratio;
     }
-    contentChunks.push(fullText.slice(lastIndex));
 
     gridDiv.innerHTML = "";
     gridDiv.style.display = "grid";
     gridDiv.style.overflow = "auto";
     gridDiv.style.gridTemplateColumns =
-      splitPoints
-        .reduce((cols, r, i, arr) => {
-          const pct = Math.round((i === 0 ? r : r - arr[i - 1]) * 100);
-          return cols + `${pct}% 20px `;
-        }, "") +
-      `${Math.round((1 - splitPoints[splitPoints.length - 1]) * 100)}%`;
+      targetPoints.reduce((cols, r, i, arr) => {
+        const pct = Math.round((i === 0 ? r : r - arr[i - 1]) * 100);
+        return cols + `${pct}% 20px `;
+      }, "") +
+      `${Math.round((1 - targetPoints[targetPoints.length - 1]) * 100)}%`;
 
-    const contentChunksWithGaps = [];
-    let lastIndex2 = 0;
-    for (const index of splitIndices) {
-      contentChunksWithGaps.push(fullText.slice(lastIndex2, index));
-      lastIndex2 = index;
-    }
-    contentChunksWithGaps.push(fullText.slice(lastIndex2));
+    const estimatedLimit = currentMode === "vertical"
+      ? Math.floor(100 * window.innerHeight / 14)  // approx 14px line height
+      : Math.floor(100 * window.innerWidth / 7);   // approx 7px char width
 
-    contentChunksWithGaps.forEach((chunk, i) => {
-      const div = document.createElement("div");
-      div.innerText = chunk;
-      div.style.whiteSpace = "pre-wrap";
-      div.style.overflow = "auto";
-      gridDiv.appendChild(div);
-      if (i < contentChunksWithGaps.length - 1) {
+    contentChunks.forEach((chunk, i) => {
+      let chunkIndex = 0;
+      while (chunkIndex < chunk.length) {
+        const fitCount = measureTextFit(
+          chunk.slice(chunkIndex),
+          currentMode === "vertical" ? "height" : "width",
+          currentMode === "vertical" ? "100vh" : "100vw"
+        );
+        const part = chunk.slice(chunkIndex, chunkIndex + fitCount);
+        const div = document.createElement("div");
+        div.innerText = part;
+        div.style.whiteSpace = "pre-wrap";
+        div.style.overflow = "hidden";
+        if (currentMode === "vertical") div.style.maxHeight = "100vh";
+        else div.style.maxWidth = "100vw";
+        gridDiv.appendChild(div);
+        chunkIndex += fitCount;
+      }
+      if (i < contentChunks.length - 1) {
         const gap = document.createElement("div");
         gap.style.width = "20px";
         gridDiv.appendChild(gap);
       }
     });
-  });
+  } else {
+    const percentages = [...targetPoints, 1];
+    const contentChunks = [];
+    let lastRatio = 0;
+    for (const ratio of percentages) {
+      const start = Math.floor(fullText.length * lastRatio);
+      const end = Math.floor(fullText.length * ratio);
+      contentChunks.push(fullText.slice(start, end));
+      lastRatio = ratio;
+    }
+
+    gridDiv.innerHTML = "";
+    gridDiv.style.display = "grid";
+    gridDiv.style.overflow = "auto";
+    gridDiv.style.gridTemplateRows =
+      targetPoints.reduce((rows, r, i, arr) => {
+        const pct = Math.round((i === 0 ? r : r - arr[i - 1]) * 100);
+        return rows + `${pct}% 20px `;
+      }, "") +
+      `${Math.round((1 - targetPoints[targetPoints.length - 1]) * 100)}%`;
+
+    const estimatedLimit = currentMode === "vertical"
+      ? Math.floor(100 * window.innerHeight / 14)  // approx 14px line height
+      : Math.floor(100 * window.innerWidth / 7);   // approx 7px char width
+
+    contentChunks.forEach((chunk, i) => {
+      let chunkIndex = 0;
+      while (chunkIndex < chunk.length) {
+        const fitCount = measureTextFit(
+          chunk.slice(chunkIndex),
+          currentMode === "vertical" ? "height" : "width",
+          currentMode === "vertical" ? "100vh" : "100vw"
+        );
+        const part = chunk.slice(chunkIndex, chunkIndex + fitCount);
+        const div = document.createElement("div");
+        div.innerText = part;
+        div.style.whiteSpace = "pre-wrap";
+        div.style.overflow = "hidden";
+        if (currentMode === "vertical") div.style.maxHeight = "100vh";
+        else div.style.maxWidth = "100vw";
+        gridDiv.appendChild(div);
+        chunkIndex += fitCount;
+      }
+      if (i < contentChunks.length - 1) {
+        const gap = document.createElement("div");
+        gap.style.height = "20px";
+        gridDiv.appendChild(gap);
+      }
+    });
+  }
+});
   document.getElementById("reset-button").addEventListener("click", () => {
     splitPoints = [];
+    rowSplitPoints = [];
     const originalText = gridDiv.innerText.replace(/\s+$/, "");
     gridDiv.innerHTML = originalText;
     gridDiv.style.display = "";
     gridDiv.style.gridTemplateColumns = "";
+    gridDiv.style.gridTemplateRows = "";
   });
   </script>
 </body>

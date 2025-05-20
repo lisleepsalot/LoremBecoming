@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Type Ipsum</title>
+  <link rel="stylesheet" href="page_style.css">
+  <style>
+    body{
+      background-image: none;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+    }
+
+    .main-sections,
+    .section,
+    #typingArea,
+    #loremTextContainer,
+    #charComparison,
+    .char-map {
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+    }
+
+    .main-sections {
+      margin-top: 140px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      padding: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    #typingArea {
+      width: 100%;
+      height: 100%;
+      font-size: 1rem;
+    }
+
+    #letterFrequency {
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+
+    #charComparison {
+      margin-top: 20px;
+      line-height: 1.5em;
+      white-space: pre-wrap;
+    }
+
+    .char-map span {
+      display: inline-block;
+      margin-right: 12px;
+    }
+    .floating-percentage {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      border: 1px solid black;
+      padding: 10px 16px;
+      font-family: sans-serif;
+      font-size: 1em;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-window">
+    <div class="heading">
+    <a href="index.html">Back</a>
+    <a href="index.html">Next</a>
+    </div>
+    <div class="content">
+        <span>Title Here</span>
+        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        </div>
+    </div>
+</div>
+
+  <div class="main-sections">
+    <div class="section" id="typingSection">
+      <textarea id="typingArea" placeholder="Type something here..."></textarea>
+    </div>
+    <div class="section" id="loremIpsum">
+      <p id="loremTextContainer"></p>
+    </div>
+    <div class="section" id="letterFrequency">
+      <div id="charComparison"></div>
+    </div>
+  </div>
+
+  <div id="matchPercentage" class="floating-percentage"></div>
+
+  <script>
+    const textarea = document.getElementById('typingArea');
+    const charComparison = document.getElementById('charComparison');
+    const matchPercentage = document.getElementById('matchPercentage');
+    const loremText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non euismod nibh. Phasellus sed convallis ipsum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed eget mi vel neque luctus ultrices quis semper nunc. Maecenas vestibulum magna augue, in elementum augue molestie at. Ut scelerisque sit amet justo at mollis. Proin non felis sed purus varius eleifend eget id erat. In suscipit in nisi ut luctus. Curabitur sit amet magna dignissim, aliquam lectus in, vestibulum magna. Duis eget accumsan arcu. Pellentesque mauris dui, mattis commodo eros ut, viverra laoreet odio. Fusce sit amet leo sed sapien rhoncus molestie.
+
+Maecenas ac odio vitae eros pharetra accumsan et vel libero. Donec dictum a turpis eu ornare. Vivamus pulvinar libero ac turpis ultrices, non facilisis nulla rutrum. Sed nibh ligula, lobortis a justo vel, facilisis aliquet eros. Proin eleifend bibendum eleifend. Curabitur bibendum tincidunt nisl, ac vulputate quam mollis sed. Nullam eleifend leo in mauris lobortis interdum. Nam pulvinar bibendum consectetur. Phasellus sollicitudin tincidunt convallis. Nam sem dolor, mollis vel nunc vitae, commodo aliquam nibh. Aliquam eu aliquet massa, a luctus enim. Aenean ut interdum ex. Etiam lacinia scelerisque sapien. Fusce pretium et dui non accumsan.`;
+    const loremContainer = document.getElementById('loremTextContainer');
+
+    function renderLoremSpans() {
+      loremContainer.innerHTML = '';
+      for (let i = 0; i < loremText.length; i++) {
+        const span = document.createElement('span');
+        span.textContent = loremText[i];
+        loremContainer.appendChild(span);
+      }
+    }
+
+    function getAlphaDistance(a, b) {
+      const isLetter = char => /^[a-z]$/.test(char);
+      a = a.toLowerCase();
+      b = b.toLowerCase();
+      if (!isLetter(a) || !isLetter(b)) return a === b ? 0 : 13;
+      return Math.abs(a.charCodeAt(0) - b.charCodeAt(0));
+    }
+
+    function updateCharacterComparison(input) {
+      const spans = loremContainer.querySelectorAll('span');
+      const compareLength = Math.max(0, input.length - 2);
+      for (let i = 0; i < spans.length; i++) {
+        const inputChar = input[i] || '';
+        const loremChar = loremText[i] || '';
+        if (i < compareLength) {
+          const diff = getAlphaDistance(inputChar, loremChar);
+          const opacity = diff / 13;
+          spans[i].style.backgroundColor = `rgba(255, 0, 0, ${opacity})`;
+        } else {
+          spans[i].style.backgroundColor = 'transparent';
+        }
+      }
+
+      // Only append new spans for characters that haven't been rendered yet
+      const existingSpans = charComparison.querySelectorAll('span');
+      for (let i = existingSpans.length; i < Math.min(input.length, loremText.length); i++) {
+        const inputChar = input[i] || '';
+        const loremChar = loremText[i] || '';
+        const diff = getAlphaDistance(inputChar, loremChar);
+        const opacity = diff / 13;
+        const color = diff === 0 ? 'green' : `rgba(255, 0, 0, ${opacity})`;
+        const matchSymbol = diff === 0 ? '=' : '→';
+
+        const span = document.createElement('span');
+        span.innerHTML = `<b>${loremChar}</b> ${matchSymbol} <span style="color:${color}">${inputChar || ' '}</span>   `;
+        span.style.opacity = '0';
+        span.style.transition = 'opacity 0.4s ease';
+        charComparison.appendChild(span);
+        requestAnimationFrame(() => {
+          span.style.opacity = '1';
+        });
+      }
+      const total = Math.min(input.length, loremText.length);
+      const matches = input.split('').filter((c, i) => c === loremText[i]).length;
+      const percent = total > 0 ? Math.round((matches / total) * 100) : 0;
+      matchPercentage.textContent = `this text is ${percent}% match with lorem ipsum`;
+    }
+
+    textarea.addEventListener('input', () => {
+      updateCharacterComparison(textarea.value);
+    });
+
+    renderLoremSpans();
+  </script>
+</body>
+</html>

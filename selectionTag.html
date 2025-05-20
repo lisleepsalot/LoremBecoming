@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="page_style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouveau Rebus</title>
+  <style>
+    #container{
+      padding: 0px 40px;
+      margin-top: 180px;
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-window">
+    <div class="heading">
+    <a href="index.html">Back</a>
+    <a href="index.html">Next</a>
+    </div>
+    <div class="content">
+        <span>Title Here</span>
+        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <button onclick="exportText()">Export Text</button>
+    </div>
+    </div>
+</div>
+<div class="floating-window">
+  <div class="heading">
+  <a href="index.html">Back</a>
+  <a href="index.html">Next</a>
+  </div>
+  <div class="content">
+      <span>Title Here</span>
+      <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+  </div>
+  </div>
+</div>
+  <div id="container"></div>
+  <div id="exported-text" style="background: white; margin: 0px 40px; margin-top: 40px;"></div>
+  <script>
+    const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare quis dolor non ultricies. Proin quis ipsum luctus, semper justo in, consectetur erat. Etiam accumsan tortor quis facilisis ornare. In sapien metus, faucibus a risus id, vehicula lobortis sem. Etiam hendrerit neque eu nunc lacinia pulvinar. Aenean sit amet dui sed diam malesuada pellentesque id ut tellus. Ut sit amet turpis quis justo convallis semper eget eu tellus. Nullam mattis congue tristique. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin rutrum sem egestas eleifend porttitor. Praesent lacinia interdum orci non consectetur. Pellentesque nec nisi ex. Donec ut orci scelerisque quam iaculis rutrum. Vivamus sodales massa id erat luctus rutrum. Donec consectetur justo eget augue vehicula, et imperdiet arcu fermentum. Nulla ut bibendum libero. Cras gravida sapien in lectus iaculis, vel mollis nisi dictum. Curabitur cursus lobortis erat at finibus. Aenean molestie augue sed augue interdum gravida. Aliquam erat volutpat. Sed pulvinar iaculis consectetur. Quisque accumsan, arcu ac sodales iaculis, massa tellus pharetra sem, vel faucibus nibh tortor mattis est. Proin aliquet consectetur fermentum. Nulla pretium fermentum malesuada. Duis elementum eget nisi vitae maximus. Duis egestas bibendum arcu vitae interdum. Etiam placerat vulputate lorem nec imperdiet. Morbi accumsan efficitur lectus id sollicitudin. Nunc fringilla accumsan dui vitae cursus. Fusce tristique tortor nulla, eget mattis sapien feugiat vel. Vestibulum posuere velit libero, vitae semper nibh convallis in. Fusce accumsan, leo quis ornare mollis, nisl nulla auctor arcu, auctor tempor augue nulla a mauris. In ac nunc lobortis, ultricies leo eget, porta mauris. Aliquam pretium lorem nisl, vel efficitur erat commodo sit amet. Pellentesque lobortis ipsum vitae eros accumsan, eget sagittis nibh rhoncus. Aliquam sed ex id orci ornare tristique. Vivamus nibh felis, porta ut mauris luctus, iaculis maximus lectus. Integer ligula velit, venenatis eget sapien at, faucibus porttitor justo. Fusce congue neque ipsum, et gravida erat congue rhoncus. Praesent ac tellus enim. Aenean dictum felis odio, in molestie est lobortis et. Aliquam pretium lorem augue, at pretium ligula placerat sit amet. Cras eu scelerisque sapien. Ut eget tempus nisi. Proin ullamcorper fringilla viverra. In interdum purus quis nibh vestibulum, in auctor urna lacinia.";
+    const container = document.getElementById("container");
+
+    // Hardcoded options by first letter for some common letters, fallback generates generic options
+    const optionsMap = {
+      l: ["Lorem", "Lacus", "Luctus", "Lobortis", "Ligula", "Lectus"],
+      i: ["Ipsum", "Integer", "Imperdiet", "Inceptos", "Id", "Iaculis"],
+      d: ["Dolor", "Donec", "Diam", "Dictum", "Duis", "Dui"],
+      s: ["Sit", "Semper", "Sed", "Sapien", "Sagittis", "Scelerisque"],
+      a: ["Amet", "Aliquam", "Accumsan", "Arcu", "Aenean", "Augue"],
+      c: ["Consectetur", "Curabitur", "Cras", "Class", "Commodo", "Cursus"],
+      p: ["Phasellus", "Proin", "Porta", "Praesent", "Pellentesque", "Posuere"],
+      e: ["Etiam", "Egestas", "Eget", "Ex", "Enim", "Eros"],
+      t: ["Turpis", "Tempor", "Tristique", "Tellus", "Torquent", "Tortor"],
+      v: ["Vivamus", "Velit", "Vitae", "Vestibulum", "Viverra", "Volutpat"],
+      n: ["Nulla", "Nunc", "Nec", "Nibh", "Neque", "Non"],
+      f: ["Fusce", "Faucibus", "Feugiat", "Felix", "Fringilla", "Fermentum"],
+      m: ["Malesuada", "Metus", "Molestie", "Mauris", "Maximus", "Mollis"],
+      o: ["Ornare", "Ornare", "Ornare", "Ornare", "Ornare", "Ornare"],
+      b: ["Bibendum", "Bibendum", "Bibendum", "Bibendum", "Bibendum", "Bibendum"],
+      h: ["Himenaeos", "Hendrerit", "Habitant", "Hac", "Hac", "Hac"],
+      r: ["Rutrum", "Rhoncus", "Rutrum", "Rhoncus", "Rhoncus", "Rhoncus"],
+      q: ["Quisque", "Quisque", "Quisque", "Quisque", "Quisque", "Quisque"],
+      g: ["Gravida", "Gravida", "Gravida", "Gravida", "Gravida", "Gravida"],
+      u: ["Ut", "Ut", "Ut", "Ut", "Ut", "Ut"],
+      x: ["Ex", "Ex", "Ex", "Ex", "Ex", "Ex"],
+      z: ["Zero", "Zebra", "Zinc", "Zone", "Zoom", "Zest"]
+    };
+
+    function createOptions(letter, word) {
+      let opts = optionsMap[letter];
+      if (!opts) {
+        opts = [];
+        for (let i = 1; i <= 6; i++) {
+          opts.push(letter + "word" + i);
+        }
+      }
+      return opts;
+    }
+
+    text.split(/\s+/).forEach(word => {
+      const letter = word[0].toLowerCase();
+      const select = document.createElement("select");
+      const opts = createOptions(letter, word);
+      opts.forEach(optText => {
+        const option = document.createElement("option");
+        option.textContent = optText;
+        select.appendChild(option);
+      });
+      container.appendChild(select);
+      container.appendChild(document.createTextNode(" "));
+    });
+    // Export Text functionality
+    function exportText() {
+      const selects = container.querySelectorAll("select");
+      const result = Array.from(selects).map(s => s.value).join(" ");
+      const p = document.createElement("p");
+      p.textContent = result;
+      document.getElementById("exported-text").appendChild(p);
+    }
+  </script>
+</body>
+</html>
