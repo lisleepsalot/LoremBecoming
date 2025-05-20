@@ -1,5 +1,22 @@
 // Generate today's date and time
 const title = document.getElementById('page-title');
+const becomingName = document.getElementById('becoming-title');
+if (becomingName) {
+  const originalText = becomingName.textContent;
+
+  becomingName.innerHTML = [...originalText].map(char => `<span>${char}</span>`).join('');
+
+  const chars = becomingName.querySelectorAll('span');
+  let activeIndex = 0;
+
+  setInterval(() => {
+    chars.forEach((char, index) => {
+      char.style.fontFamily = index === activeIndex ? 'Arial, sans-serif' : 'Times New Roman, serif';
+    });
+    activeIndex = (activeIndex + 1) % chars.length;
+  }, 100);
+}
+
 function updateTime() {
 const now = new Date();
 title.innerText = `Current time: ${now.toLocaleString()}`;
