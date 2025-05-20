@@ -11,7 +11,36 @@ if (becomingName) {
 
   setInterval(() => {
     chars.forEach((char, index) => {
-      char.style.fontFamily = index === activeIndex ? 'Arial, sans-serif' : 'Times New Roman, serif';
+      if (index === activeIndex) {
+        char.style.fontFamily = 'Arial, sans-serif';
+        char.style.fontSize = '3rem';
+      } else {
+        char.style.fontFamily = 'Times New Roman, serif';
+        char.style.fontSize = 'inherit';
+      }
+    });
+    activeIndex = (activeIndex + 1) % chars.length;
+  }, 200);
+}
+
+const becomingText = document.getElementById('becoming-text');
+if (becomingText) {
+  const originalText = becomingText.textContent;
+
+  becomingText.innerHTML = [...originalText].map(char => `<span>${char}</span>`).join('');
+
+  const chars = becomingText.querySelectorAll('span');
+  let activeIndex = 0;
+
+  setInterval(() => {
+    chars.forEach((char, index) => {
+      if (index === activeIndex) {
+        char.style.fontFamily = 'Arial, sans-serif';
+        char.style.fontSize = '2rem';
+      } else {
+        char.style.fontFamily = 'Times New Roman, serif';
+        char.style.fontSize = 'inherit';
+      }
     });
     activeIndex = (activeIndex + 1) % chars.length;
   }, 100);
