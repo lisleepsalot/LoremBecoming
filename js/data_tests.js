@@ -3,7 +3,7 @@ const dataTests = [
     index: 1,
     image: 'assets/test_cover1.webp',
     title: 'Echo Ipsum',
-    identifier: 'echoIpsum',
+    identifier: 'EchoIpsum',
     description: `What begins as filler becomes message, then filler again. Speak your language (unfortunately, only English for now) and watch Lorem Ipsum try to become something... before it UNBECOMES.`,
     instruction: `Speak and watch the becoming (and unbecoming) of Lorem Ipsum.`
   },
