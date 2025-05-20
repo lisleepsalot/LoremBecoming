@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Looping Div Grid</title>
+  <title>GridMaker 1</title>
   <style>
     
     /* A fixed counter display */
@@ -17,7 +17,7 @@
     }
     /* Ensure the body takes full height */
     html, body {
-      margin: 0;
+      margin-top: 100px;
     }
     @media print {
   html, body {
@@ -42,16 +42,20 @@
     <a href="index.html">Next</a>
     </div>
     <div class="content">
-        <span>Title Here</span>
-        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <span>GridMaker1</span>
+        <div class="description">A random grid generator that makes new grids like a gridgity.<br><br>
+        Instrucion: Hit “Generate” and gridgity.</div>
         <div class="buttons">
         <button onclick="location.reload()">reset</button>
         <button id="generate-btn">Generate</button>
         </div>
     </div>
+    <div id="arrow">
+      ↓for info↓
+    </div>
 </div>
   <!-- The counter display -->
-  <div id="counter">Round Count: 0</div>
+  <div id="counter" style="display: none;">Round Count: 0</div>
   
   <script>
     let roundCount = 0;
@@ -114,7 +118,6 @@
     
     // Repeatedly generates new nested grid levels with a time interval
     async function iterateGrids() {
-      if (roundCount >= 6) return;
       isTransitioning = true;
 
       let nextParents = [];
@@ -135,11 +138,12 @@
   </script>
   <script>
     document.getElementById("generate-btn").addEventListener("click", () => {
-      if (!isTransitioning && roundCount < 6) {
+      if (!isTransitioning) {
         iterateGrids();
       }
     });
   </script>
   <script src="js/loadingTransition.js"></script>
+  <script src="floatingWindow.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iterator</title>
+    <title>Loud Ipsum</title>
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@100..900&family=Doto:wght@100..900&family=Emblema+One&family=Jost:wght@100..900&family=Lilita+One&family=Montserrat:wght@100..900&family=Playwrite+HU:wght@100..400&family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="page_style.css">
     <style>
@@ -73,15 +73,20 @@
         <a href="index.html">Next</a>
         </div>
         <div class="content">
-            <span>Title Here</span>
-            <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+            <span>Loud Ipsum</span>
+            <div class="description">The louder you get, the more Lorem Ipsum panics and retypes itself.<br><br>
+                Instruction: Just speak and watch ot respond to your inner chaos.
+            </div>
             <div class="buttons">
             <button onclick="location.reload()">reset</button>
             </div>
         </div>
+        <div id="arrow">
+            ↓for info↓
+          </div>
     </div>
     <div id="iterator-container"></div>
-    <div id="debugger">Volume: 0</div>
+    <div id="debugger" style="display: none;">Volume: 0</div>
     <script>
         const loremText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis tellus neque. Maecenas pharetra facilisis tempor. Curabitur luctus eget erat sed semper. Aliquam aliquet dui et hendrerit vestibulum. Donec ac arcu vel turpis dictum tincidunt in eu mauris. Vestibulum quis enim nibh. Etiam vitae mollis mauris. Aliquam orci ante, facilisis a nisl mattis, dictum volutpat nunc. Ut sapien libero, commodo eget lobortis ac, tristique ac nisl. Nulla sed turpis sit amet lectus vulputate tempor at id purus. Etiam ullamcorper sapien sit amet turpis rhoncus placerat. Praesent id ornare enim, at luctus velit.`;
 
@@ -163,7 +168,7 @@
 
                     createNewDiv(size, fontSize);
 
-                }, 50); // Runs every 333ms (≈ 3 times per second)
+                }, 100); // Runs every 333ms (≈ 3 times per second)
             } catch (err) {
                 console.error("Microphone access denied:", err);
             }
@@ -172,5 +177,6 @@
         detectSound();
     </script>
     <script src="js/loadingTransition.js"></script>
+    <script src="js/floatingWindow.js"></script>
 </body>
 </html>

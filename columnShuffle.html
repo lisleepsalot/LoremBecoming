@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blinking Background & Dynamic Text</title>
+    <title>Column Shuffle</title>
     <link rel="stylesheet" href="page_style.css">
     <style>
         body {
@@ -18,7 +18,7 @@
             background-image: none;
         }
         .dynamic-content {
-            margin-top: 320px;
+            margin-top: 150px;
             width: 100vw;
             height: 100vh;
             transition: all 3s ease-in-out;
@@ -42,13 +42,18 @@
         <a href="index.html">Next</a>
         </div>
         <div class="content">
-            <span>Title Here</span>
-            <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+            <span>Column Shuffle</span>
+            <div class="description">Columns go wild.<br><br>
+                Instruction: Press “update” to shake the wireframe. 
+            </div>
             <div class="buttons">
                 <button onclick="location.reload()">reset</button>
                 <button onclick="manualUpdate()">update once</button>
             </div>
         </div>
+        <div id="arrow">
+            ↓for info↓
+          </div>
     </div>
     <div class="dynamic-content">Loading...</div>
     
@@ -107,7 +112,7 @@ Pellentesque ac laoreet erat, facilisis pretium erat. Ut feugiat, ipsum ac venen
             contentDiv.innerHTML = columnWrapper;
         }
 
-        let autoInterval = setInterval(updateDynamicContent, 5000);
+        let autoInterval = setInterval(updateDynamicContent, 3000);
         updateDynamicContent();
 
         function manualUpdate() {
@@ -119,5 +124,6 @@ Pellentesque ac laoreet erat, facilisis pretium erat. Ut feugiat, ipsum ac venen
         }
     </script>
     <script src="js/loadingTransition.js"></script>
+    <script src="floatingWindow.js"></script>
 </body>
 </html>

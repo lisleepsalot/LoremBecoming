@@ -13,15 +13,14 @@ window.addEventListener('DOMContentLoaded', () => {
       top: 0;
       left: 0;
       display: grid;
-      grid-template-columns: repeat(auto-fill, 20px);
-      grid-auto-rows: 20px;
+      grid-template-columns: repeat(auto-fill, 10px);
+      grid-auto-rows: 10px;
       pointer-events: none;
     }
     #checkerboard-transition div {
       opacity: 1;
-      transition: opacity 1s ease;
-      width: 20px;
-      height: 20px;
+      width: 10px;
+      height: 10px;
     }
     #checkerboard-transition div.white {
       background: white;
@@ -32,8 +31,8 @@ window.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(style);
 
-  const cols = Math.ceil(window.innerWidth / 20);
-  const rows = Math.ceil(window.innerHeight / 20);
+  const cols = Math.ceil(window.innerWidth / 10);
+  const rows = Math.ceil(window.innerHeight / 10);
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -49,7 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const total = squares.length;
 
   squares.forEach(square => {
-    const delay = Math.random() * 1000;
+    const delay = Math.random() * 300;
     setTimeout(() => {
       square.style.opacity = '0';
       completed++;

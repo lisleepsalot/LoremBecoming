@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Grid Maker 2</title>
+  <title>GridMaker 2</title>
   <link rel="stylesheet" href="page_style.css">
   <style>
     html, body {
@@ -15,7 +15,7 @@
     }
 
     #gridMaker2 {
-      margin-top: 120px;
+      margin-top:20px;
       padding: 32px;
       width: 100vw;
       height: 100vh;
@@ -42,8 +42,10 @@
     <a href="index.html">Next</a>
     </div>
     <div class="content">
-        <span>Title Here</span>
-        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <span>GridMaker2</span>
+        <div class="description">Make a grid by clicking. You are now the God of Rectangles.<br><br>
+          Instruction: Click. A grid appears. Keep going. You are the algorithm. (Horizontal is a bit buggy)
+        </div>
         <div class="labels">
           <input type="radio" id="vertical" name="direction" value="vertical" checked>
           <label for="vertical">Vertical</label>
@@ -53,6 +55,9 @@
         <div class="controls">
           <button id="reset-button">Reset</button>
         </div>
+    </div>
+    <div id="arrow">
+      ↓for info↓
     </div>
 </div>
 
@@ -279,5 +284,6 @@ gridDiv.addEventListener("click", (e) => {
   });
   </script>
   <script src="js/loadingTransition.js"></script>
+  <script src="floatingWindow.js"></script>
 </body>
 </html>

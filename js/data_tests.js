@@ -3,128 +3,80 @@ const dataTests = [
     index: 1,
     image: 'assets/test_cover1.webp',
     title: 'Echo Ipsum',
-    identifier: 'echoipsum',
-    description: `What begins as filler becomes message, then filler again—a cycle of becoming and unbecoming.`,
-    instruction: `Speak and watch.`
+    identifier: 'echoIpsum',
+    description: `What begins as filler becomes message, then filler again. Speak your language (unfortunately, only English for now) and watch Lorem Ipsum try to become something... before it UNBECOMES.`,
+    instruction: `Speak and watch the becoming (and unbecoming) of Lorem Ipsum.`
   },
   {
     index: 2, 
     image: 'assets/test_cover2.jpg',
-    title: 'Echo Iterator1',
-    identifier: 'iterator',
-    description: `Iterate lorem ipsum based on the volume`,
-    instruction: ``
+    title: 'Loud Ipsum',
+    identifier: 'loudIpsum',
+    description: `The louder you are, the more Lorem Ipsum panics and rearranges itself. `,
+    instruction: `Use your voice—literally. Speak to shape the layout.`
   },
   {
     index: 3, 
     image: 'assets/test_cover3.png',
-    title: 'Selected Text',
-    identifier: 'selected',
-    description: `Your second item’s description here…`,
-    instruction: ``
+    title: 'Dummy Dialogue',
+    identifier: 'dummyDialogue',
+    description: `Highlight text and replace it with dummy versions in other languages. Maybe meaning sneaks in through the mess.`,
+    instruction: `Highlight a section, then pick a new dummy language to swap it in.`
   },
   {
     index: 4,
     image: 'assets/test_cover4.webp',
-    title: 'Column Iterator',
-    identifier: 'columnIterator',
-    description: `Your second item’s description here…`,
-    instruction: ``
+    title: 'Column Shuffle',
+    identifier: 'columnShuffle',
+    description: `Press a button and let the columns rearrange.`,
+    instruction: `Press 'update' to force a reflow.`
   },
   {
     index: 5,
     image: 'assets/test_cover5.gif',
-    title: 'Grid Maker 1',
+    title: 'GridMaker 1',
     identifier: 'gridMaker1',
-    description: `Translate dummy text into different languages?`,
-    instruction: ``
+    description: `Build endless grids from randomized algorithms. Grids inside grids inside... `,
+    instruction: `Hit 'generate' and let the recursion begin.`
   },
   {
     index: 6, 
     image: 'assets/test_cover6.png',
-    title: 'Grid Maker 2',
+    title: 'GridMaker 2',
     identifier: 'gridMaker2',
-    description: `Your second item’s description here…`,
-    instruction: ``
+    description: `Grids appear with every click. This one's hands-on—draw your own gRiD.`,
+    instruction: `Click to create a grid. Keep going to fill the void.`
   },
   {
     index: 7,
     image: 'assets/test_cover7.webp',
-    title: 'Type Ipsum',
-    identifier: 'typeIpsum',
-    description: `Your second item’s description here…`,
-    instruction: ``
+    title: 'Not Quite Lorem',
+    identifier: 'notQuiteLorem',
+    description: `Type your own text and see how it stacks up against the one true placeholder. You are a remix of Lorem Ipsum.`,
+    instruction: `Type and compare yourself to the Lorem standard.`
   },
   {
     index: 8,
     image: 'assets/test_cover8.jpeg',
-    title: 'Nouveau Rebus',
-    identifier: 'nouveauRebus',
-    description: `Putting Lorem Ipsum in situations`,
-    instruction: ``
+    title: 'Lorem Rebus',
+    identifier: 'loremRebus',
+    description: `Inspired by Nouveau Rebus, this one swaps letters for web images.`,
+    instruction: `Hover on letters to reveal their secret identities.`
   },
   {
     index: 9,
     image: 'assets/test_cover9.png',
-    title: 'Alternatives',
-    identifier: 'selectionTag',
-    description: `Making Lorem Ipsum into reasonable text anytime`,
-    instruction: ``
+    title: 'Option Ipsum',
+    identifier: 'optionIpsum',
+    description: `Choose alternative words and export your personalized nonsense. A design tool for the indecisive.`,
+    instruction: `1. Choose your text. 2. Export the chaos.`
   },
   {
     index: 10,
     image: 'assets/test_cover10.webp',
     title: `Designer's Hand`,
     identifier: 'hand',
-    description: `Your second item’s description here…`,
+    description: `Something about a designer's hand I guess.`,
     instruction: ``
   },
 ];
-
-const originalWords = [];
-
-lorem.split(" ").forEach((word, idx) => {
-  const span = document.createElement("span");
-  span.textContent = word + " ";
-  span.classList.add("word");
-  span.dataset.index = idx;
-  originalWords[idx] = word;
-  container.appendChild(span);
-});
-
-document.addEventListener("mouseup", () => {
-  const selection = window.getSelection();
-  if (!selection.rangeCount) return;
-
-  const range = selection.getRangeAt(0);
-  const selectedNodes = [];
-
-  const walker = document.createTreeWalker(range.commonAncestorContainer, NodeFilter.SHOW_ELEMENT, {
-    acceptNode: (node) => {
-      if (node.classList && node.classList.contains("word") && range.intersectsNode(node)) {
-        return NodeFilter.FILTER_ACCEPT;
-      }
-      return NodeFilter.FILTER_SKIP;
-    }
-  });
-
-  let currentNode = walker.currentNode;
-  while (currentNode) {
-    selectedNodes.push(currentNode);
-    currentNode = walker.nextNode();
-  }
-
-  selectedNodes.forEach((node) => {
-    const idx = node.dataset.index;
-    node.dataset.original = originalWords[idx];
-    node.textContent = '8'.repeat(originalWords[idx].length) + ' ';
-  });
-
-  setTimeout(() => {
-    selectedNodes.forEach((node) => {
-      node.textContent = node.dataset.original + ' ';
-    });
-  }, 200);
-
-  selection.removeAllRanges();
-});

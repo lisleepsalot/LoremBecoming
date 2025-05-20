@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Interactive Selection</title>
+  <title>Dummy Dialogue</title>
   <link rel="stylesheet" href="page_style.css">
   <style>
     body{
       background-image: none;
     }
     .text{
-      margin-top: 140px;
       font-family: monospace;
       font-size: 0.85rem;
       padding: 60px;
@@ -29,6 +28,9 @@
       margin-right: 10px;
       cursor: pointer;
     }
+    .floating-window{
+      top: -180px;
+    }
   </style>
 </head>
 <body>
@@ -39,8 +41,9 @@
     <a href="index.html">Next</a>
     </div>
     <div class="content">
-        <span>Title Here</span>
-        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <span>Dummy Dialogue</span>
+        <div class="description">You highlight a bit of Lorem Ipsum and swap it for dummy text in another language. Suddenly, things sound different, maybe even… meaningful? Probably not. <br><br>
+          Instruction: Highlight the text, pick your substitute, and enjoy the mess of mixed-up languages.</div>
         <div class="buttons">
           <div>
             <label><input type="radio" name="altTextMode" value="random" checked> Random</label>
@@ -56,6 +59,9 @@
               <label><input type="radio" name="altTextMode" value="Simplified"> Simplified Chinese</label>
               <label><input type="radio" name="altTextMode" value="Traditional"> Traditional Chinese</label></div>
         </div>
+    </div>
+    <div id="arrow">
+      ↓for info↓
     </div>
 </div>
 
@@ -73,7 +79,11 @@
   
   Nulla nec imperdiet purus, sed mollis purus. Aenean tristique a libero sit amet posuere. Proin at purus quis tellus porta placerat. Duis a varius lorem. Vestibulum id pharetra dui. Donec vitae urna posuere, accumsan ante sed, blandit ligula. Quisque a sollicitudin ante, sed semper ante. Praesent vel massa lacinia, maximus ex at, fermentum neque. Etiam non dictum sapien. Donec placerat augue ullamcorper felis laoreet posuere. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   
-  Nullam diam lacus, mattis gravida porta sit amet, suscipit in nisl. Suspendisse egestas ornare libero tristique dapibus. In non dignissim lectus, a vehicula ligula. Phasellus id sem varius, ornare nisl non, malesuada nisl. Sed sed nulla eu nulla vulputate fermentum ac sit amet quam. Nulla et suscipit sapien, et tempus velit. Cras nec est dui. Phasellus porttitor eleifend mauris, et aliquam quam scelerisque et. Vestibulum ante ipsum</p>
+  Nullam diam lacus, mattis gravida porta sit amet, suscipit in nisl. Suspendisse egestas ornare libero tristique dapibus. In non dignissim lectus, a vehicula ligula. Phasellus id sem varius, ornare nisl non, malesuada nisl. Sed sed nulla eu nulla vulputate fermentum ac sit amet quam. Nulla et suscipit sapien, et tempus velit. Cras nec est dui. Phasellus porttitor eleifend mauris, et aliquam quam scelerisque et. Vestibulum ante ipsum
+
+  Sed aliquet efficitur lectus, in gravida neque cursus ut. Donec sodales facilisis eros, vitae egestas sem mattis ut. Ut finibus eu odio eu fringilla. Donec a feugiat nunc, quis tincidunt sapien. Morbi venenatis tempor nisi eu molestie. Mauris vel justo eu nisl egestas consequat. Aenean quis purus eros. Nam non urna erat. Nullam hendrerit gravida libero nec venenatis. Aenean ornare, augue et ullamcorper pharetra, ipsum mauris laoreet risus, vehicula tempus nisi lacus quis diam. Duis dapibus odio tellus, eu euismod enim finibus et.
+
+</p>
 
 <script>
   let originalText = "";
@@ -307,8 +317,12 @@ Aπεριγρ αγωγήστείτε υψηλής πειαφάν ευργάνε�
       originalText = "";
       selectionRange = null;
     }
+    // Reset the arrow text regardless of hover state
+    const arrow = document.getElementById('arrow');
+    if (arrow) arrow.textContent = '↓for info↓';
   });
 </script>
 <script src="js/loadingTransition.js"></script>
+<script src="floatingWindow.js"></script>
 </body>
 </html>

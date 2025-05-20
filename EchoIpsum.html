@@ -4,21 +4,14 @@
 <meta charset="UTF-8" />
 <title>Echo Ipsum</title>
 <link rel="stylesheet" href="page_style.css">
-<link rel="stylesheet" href="test1_styles.css">
 <style>
-@font-face {
-    font-family: 'Heap Regular';
-    src: url('assets/Heap-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
 #transcript {
-    padding-top: 175px;
+    padding-top: 80px;
     max-width: 100%;
     margin: 0px 40px ;
     font-size: 1.2rem;
     white-space: pre-wrap;
-    line-height: 2.4rem;
+    line-height: 3rem;
 }
 .char {
   /* border: 0.5px solid black; */
@@ -43,14 +36,18 @@
 <div class="floating-window">
     <div class="heading">
     <a href="index.html">Back</a>
-    <a href="index.html">Next</a>
+    <a id="next">Next</a>
     </div>
     <div class="content">
-        <span>Title Here</span>
-        <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+        <span id="title">Echo Ipsum</span>
+        <div class="description" id="description">Lorem Ipsum goes on a brief spiritual journey. You speak; it listens. Then it forgets. <br><br>
+          Instruction: Speak your language (unfortunately, it only understands English), and watch Lorem Ipsum try to become something… before it unbecomes.</div>
         <div class="buttons">
         <button onclick="location.reload()">reset</button>
         </div>
+    </div>
+    <div id="arrow">
+      ↓for info↓
     </div>
 </div>
 
@@ -155,11 +152,7 @@
         }
 
     </script>
-    <script src="js/data_tests.js"></script>
-    <script src="js/floating_info.js"></script>
-    <script>
-        showInfo('echoIpsum');
-    </script>
     <script src="js/loadingTransition.js"></script>
+    <script src="js/floatingWindow.js"></script>
 </body>
 </html>

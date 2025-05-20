@@ -27,7 +27,7 @@ dataTests.forEach((dataTest) => {
   // block 2: index
   const idx = document.createElement('div');
   idx.classList.add('block-2');
-  idx.textContent = `test` + `${String(dataTest.index).padStart(2, '0')}`;
+  idx.textContent = `test   (` + `${String(dataTest.index).padStart(2, '0')}` + `)`;
   item.append(idx);
 
   // block 3: title
@@ -37,13 +37,13 @@ dataTests.forEach((dataTest) => {
   item.append(h2);
 
   // block 4: description (spans cols 4–6)
-  const desc = document.createElement('div');
+  const desc = document.createElement('h2');
   desc.classList.add('block-4');
   desc.textContent = dataTest.description;
   item.append(desc);
 
   item.addEventListener('click', () => {
-    window.open(`${dataTest.identifier}.html`, '_blank', 'noopener,noreferrer');
+    window.location.href = `${dataTest.identifier}.html`;
   });
 
   container.append(item);

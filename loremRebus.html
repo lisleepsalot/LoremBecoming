@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lorem Hover Expand</title>
+  <title>Lorem Rebu</title>
   <link rel="stylesheet" href="page_style.css" />
   <style>
     .char.expanded {
@@ -39,7 +39,7 @@
       font-family: sans-serif;
     }
 
-    .container {
+    .type-container {
       font-size: 5rem;
       line-height: 1;
       max-width: 1200px;
@@ -83,18 +83,23 @@
   </style>
 </head>
 <body>
-  <div class="floating-window">
+  <div class="floating-window" style="font-family: 'Times New Roman', Times, serif;">
     <div class="heading">
       <a href="index.html">Back</a>
       <a href="index.html">Next</a>
     </div>
     <div class="content">
-      <span>Title Here</span>
-      <div class="description">Description text goes here. It can span across two rows worth of height.</div>
+      <span>Lorem Rebu</span>
+      <div class="description">Letters melt into images<br><br>
+      Instrucion:  Hover over letters and watch them bloom into images.
+      </div>
+    </div>
+    <div id="arrow">
+      ↓for info↓
     </div>
   </div>
 
-  <div class="container" id="textContainer"></div>
+  <div class="type-container" id="textContainer"></div>
 
   <script>
     const text =
@@ -143,5 +148,6 @@
     });
   </script>
   <script src="js/loadingTransition.js"></script>
+  <script src="floatingWindow.js"></script>
 </body>
 </html>
