@@ -1,4 +1,36 @@
 window.addEventListener('DOMContentLoaded', () => {
+  function checkScreenWidth() {
+    const existing = document.getElementById('width-warning');
+    if (window.innerWidth < 1500) {
+      if (!existing) {
+        const warning = document.createElement('div');
+        warning.id = 'width-warning';
+        warning.style.position = 'fixed';
+        warning.style.top = '0';
+        warning.style.left = '0';
+        warning.style.width = '100vw';
+        warning.style.height = '100vh';
+        warning.style.backgroundColor = 'white';
+        warning.style.zIndex = '10000';
+        warning.style.display = 'flex';
+        warning.style.alignItems = 'center';
+        warning.style.justifyContent = 'center';
+        warning.style.fontSize = '2rem';
+        warning.style.fontFamily = 'sans-serif';
+        warning.style.textAlign = 'center';
+        warning.textContent = 'Please use a screen that is at least 1500px wide to access.';
+        document.body.appendChild(warning);
+      }
+    } else {
+      if (existing) {
+        existing.remove();
+      }
+    }
+  }
+
+  checkScreenWidth();
+  if (window.innerWidth < 1500) return;
+
   const container = document.createElement('div');
   container.id = 'checkerboard-transition';
   document.body.appendChild(container);
@@ -60,4 +92,6 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }, delay);
   });
+
+  window.addEventListener('resize', checkScreenWidth);
 });
