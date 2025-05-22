@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
   function checkScreenWidth() {
     const existing = document.getElementById('width-warning');
-    if (window.innerWidth < 1500) {
+    if (window.innerWidth < 1200) {
       if (!existing) {
         const warning = document.createElement('div');
         warning.id = 'width-warning';
@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
         warning.style.fontSize = '2rem';
         warning.style.fontFamily = 'sans-serif';
         warning.style.textAlign = 'center';
-        warning.textContent = 'Please use a screen that is at least 1500px wide to access.';
+        warning.textContent = 'Please use a screen that is at least 1200px wide to access.';
         document.body.appendChild(warning);
       }
     } else {
